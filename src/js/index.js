@@ -209,12 +209,7 @@
         var network = networks[networkIndex];
         network.onSelect();
         adjustNetworkForSegwit();
-        if (seed != null) {
-            phraseChanged();
-        }
-        else {
-            rootKeyChanged();
-        }
+        rootKeyChanged();
     }
 
     function bip32ClientChanged(e) {
@@ -296,6 +291,7 @@
         showPending();
         adjustNetworkForSegwit();
         var phrase = DOM.phrase.val();
+        var seed = DOM.seed.val();
         if (phrase != "") {
             // Calculate and display for mnemonic
             var errorText = findPhraseErrors(phrase);
@@ -306,6 +302,11 @@
             // Calculate and display
             var passphrase = DOM.passphrase.val();
             calcBip32RootKeyFromSeed(phrase, passphrase);
+        }
+        else if (seed != "") {
+          bip32RootKey = libs.bitcoin.HDNode.fromSeedHex(seed, network);
+          var rootKeyBase58 = bip32RootKey.toBase58();
+          DOM.rootKey.val(rootKeyBase58);
         }
         else {
             // Calculate and display for root key
